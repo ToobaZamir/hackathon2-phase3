@@ -1,0 +1,582 @@
+openapi: 3.0.0
+info:
+  title: JWT Authentication API
+  version: 1.0.0
+  description: API contracts for JWT-based authentication system
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Creates a new user account with the provided credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  description: Unique username for the account
+                email:
+                  type: string
+                  format: email
+                  minLength: 5
+                  maxLength: 100
+                  description: Valid email address
+                first_name:
+                  type: string
+                  maxLength: 50
+                  description: Optional first name
+                last_name:
+                  type: string
+                  maxLength: 50
+                  description: Optional last name
+                password:
+                  type: string
+                  minLength: 6
+                  maxLength: 128
+                  description: Password for the account
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/UserPublic'
+                      token:
+                        $ref: '#/components/schemas/Token'
+                  message:
+                    type: string
+                    example: "User registered successfully"
+        '400':
+          description: Validation error or username/email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      summary: Authenticate user and return JWT
+      description: Validates user credentials and returns an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username or email for login
+                password:
+                  type: string
+                  description: Password for the account
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        $ref: '#/components/schemas/Token'
+                      user:
+                        $ref: '#/components/schemas/UserPublic'
+                  message:
+                    type: string
+                    example: "Login successful"
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      description: Client-side token disposal (no server-side session)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Logout successful"
+
+  /api/{user_id}/tasks:
+    get:
+      summary: Get tasks for authenticated user
+      description: Retrieve all tasks for the authenticated user with optional filters
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+        - name: completed
+          in: query
+          required: false
+          description: Filter by completion status
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          required: false
+          description: Max number of tasks to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          description: Number of tasks to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new task for authenticated user
+      description: Creates a new task associated with the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/{user_id}/tasks/{id}:
+    get:
+      summary: Get a specific task
+      description: Retrieve a specific task by ID for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or not owned by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update a specific task
+      description: Update a specific task by ID for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or not owned by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a specific task
+      description: Delete a specific task by ID for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or not owned by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/{user_id}/tasks/{id}/complete:
+    patch:
+      summary: Toggle task completion status
+      description: Update the completion status of a specific task
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID (must match authenticated user)
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - completed
+              properties:
+                completed:
+                  type: boolean
+                  description: New completion status
+      responses:
+        '200':
+          description: Task completion status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '401':
+          description: Unauthenticated - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized - user_id in path doesn't match token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found or not owned by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserPublic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "johndoe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        is_active:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        token_type:
+          type: string
+          example: "bearer"
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Sample Task"
+        description:
+          type: string
+          example: "Description of the task"
+        completed:
+          type: boolean
+          example: false
+        user_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-01T00:00:00Z"
+
+    TaskCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "New Task"
+        description:
+          type: string
+          maxLength: 1000
+          example: "Task description"
+        completed:
+          type: boolean
+          default: false
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Updated Task"
+        description:
+          type: string
+          maxLength: 1000
+          example: "Updated description"
+        completed:
+          type: boolean
+          example: true
+
+    TaskListResponse:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          example: 5
+
+    APIResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          description: Response data payload
+        message:
+          type: string
+          example: "Operation successful"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "Validation failed"
+
+security:
+  - BearerAuth: []

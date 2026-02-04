@@ -44,11 +44,18 @@ const TaskEditForm: React.FC<TaskEditFormProps> = ({ task, onCancel, onSuccess }
 
   const onSubmit = async (data: TaskUpdateFormInputs) => {
     try {
-      await updateTask(task.id, {
-        title: data.title,
-        description: data.description || undefined,
-        completed: task.completed, // Preserve the current completion status
-      });
+      // Only send fields that have actually changed
+      const updateData: any = {};
+
+      if (data.title !== task.title) {
+        updateData.title = data.title;
+      }
+
+      if (data.description !== task.description) {
+        updateData.description = data.description || undefined;
+      }
+
+      await updateTask(task.id, updateData);
       reset(); // Clear the form after successful update
       onSuccess(); // Notify parent component of success
     } catch (error) {

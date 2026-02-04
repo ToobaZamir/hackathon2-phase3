@@ -34,6 +34,7 @@ export default function TaskItem({ todo, onUpdate }: TaskItemProps) {
         onUpdate(prevTasks => prevTasks.filter(t => t.id !== todo.id));
       } catch (error) {
         console.error('Error deleting task:', error);
+        alert('Failed to delete task. Please try again.');
       }
     }
   };

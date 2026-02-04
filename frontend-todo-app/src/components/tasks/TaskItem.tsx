@@ -52,9 +52,12 @@ export default function TaskItem({ todo, onUpdate }: TaskItemProps) {
         description: editDescription,
       });
 
+      // Update the parent state with the new task data
       onUpdate(prevTasks =>
         prevTasks.map(t => t.id === todo.id ? updatedTask : t)
       );
+
+      // Exit edit mode
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating task:', error);

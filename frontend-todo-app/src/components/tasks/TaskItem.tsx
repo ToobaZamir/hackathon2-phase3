@@ -49,7 +49,8 @@ export default function TaskItem({ todo, onUpdate }: TaskItemProps) {
     try {
       const updatedTask = await taskService.updateTask(todo.id, {
         title: editTitle,
-        description: editDescription,
+        description: editDescription || undefined,
+        completed: todo.completed, // Preserve the current completion status
       });
 
       // Update the parent state with the new task data

@@ -25,9 +25,10 @@ logger = logging.getLogger(__name__)
 # ---------------- LIFESPAN ----------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initializing database...")
-    SQLModel.metadata.create_all(bind=engine)
-    logger.info("Database initialized")
+    logger.info("Application starting up...")
+    # Note: Database tables are created via Alembic migrations
+    # Run: alembic upgrade head
+    logger.info("Application ready")
     yield
     logger.info("Shutting down...")
 

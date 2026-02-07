@@ -2,8 +2,19 @@
 
 **Feature Branch**: `004-ai-todo-chatbot`
 **Created**: 2026-02-07
+**Last Updated**: 2026-02-07
 **Status**: Draft
 **Input**: User description: "Build a complete AI-powered Todo Chatbot for Hackathon II Phase 3"
+
+## Updates
+
+**2026-02-07**: Updated to use **Cohere API** (instead of OpenAI) per constitution revision v2.0.1. Key changes:
+- **LLM Provider**: Cohere API via OpenAI-compatible endpoint
+- **Primary Model**: `command-a-03-2025` (optimized for agentic workflows and tool use)
+- **Alternative Model**: `command-r-plus-08-2024` (for complex multi-step reasoning)
+- **Integration Method**: OpenAI SDK with Cohere compatibility (`base_url="https://api.cohere.ai/compatibility/v1"`)
+- **Environment Variable**: `COHERE_API_KEY` (replaces `OPENAI_API_KEY`)
+- All functional requirements, user stories, and acceptance criteria remain unchanged—only the underlying AI provider implementation has been updated.
 
 ## Overview
 

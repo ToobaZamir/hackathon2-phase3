@@ -136,7 +136,7 @@ As a user, I want my conversation history to persist across sessions, so I can r
   - Database transactions ensure data consistency; agent operates stateless so no race conditions
 - What if a user tries to access another user's tasks by manipulating the API?
   - JWT authentication ensures user_id is extracted from token, not request body; authorization checks prevent cross-user access
-- What happens when the OpenAI API is rate-limited or unavailable?
+- What happens when the Cohere API is rate-limited or unavailable?
   - System should return a graceful error message and log the failure for monitoring
 
 ## Requirements *(mandatory)*
@@ -145,7 +145,7 @@ As a user, I want my conversation history to persist across sessions, so I can r
 
 **Core Conversation & Agent**:
 - **FR-001**: System MUST accept natural language messages via a chat endpoint at `/api/{user_id}/chat`
-- **FR-002**: System MUST use an AI agent (OpenAI Agents SDK) to interpret user intent from natural language input
+- **FR-002**: System MUST use an AI agent (Cohere API via OpenAI-compatible client) to interpret user intent from natural language input
 - **FR-003**: Agent MUST detect user intent and map to appropriate MCP tool calls (add, list, complete, delete, update tasks)
 - **FR-004**: Agent MUST chain multiple tool calls when needed (e.g., list tasks before deleting by name)
 - **FR-005**: Agent MUST respond in friendly, natural language with confirmations for all actions
@@ -217,7 +217,9 @@ As a user, I want my conversation history to persist across sessions, so I can r
 
 ### Constraints
 
-- **Technology Stack**: Must use FastAPI (backend), OpenAI Agents SDK (AI logic), Official MCP Python SDK (tool protocol), SQLModel (ORM), Neon PostgreSQL (database), OpenAI ChatKit (frontend), Better Auth (authentication)
+- **Technology Stack**: Must use FastAPI (backend), Cohere API with OpenAI SDK compatibility (AI logic), Official MCP Python SDK (tool protocol), SQLModel (ORM), Neon PostgreSQL (database), OpenAI ChatKit (frontend), Better Auth (authentication)
+- **AI Models**: Primary model is `command-a-03-2025` (for agentic workflows and tool use); alternative is `command-r-plus-08-2024` (for complex reasoning)
+- **API Integration**: Use OpenAI SDK with Cohere compatibility endpoint: `client = OpenAI(api_key=COHERE_API_KEY, base_url="https://api.cohere.ai/compatibility/v1")`
 - **Development Process**: Zero manual coding allowed - all code generated via Claude Code using Agentic Dev Stack (Spec → Plan → Tasks → Implement)
 - **Architecture**: Stateless server design - no in-memory state, fresh agent instantiation per request, all state in database
 - **Security**: JWT-based authentication enforced on all endpoints except login/signup
@@ -226,18 +228,21 @@ As a user, I want my conversation history to persist across sessions, so I can r
 ### Assumptions
 
 - **User Behavior**: Users are familiar with chat interfaces and understand basic conversational interaction patterns
-- **Language**: All interactions are in English (no multi-language support required for Phase 3)
+- **Language**: All interactions are in English (no multi-language support required for Phase 3, though Cohere supports multilingual capabilities for future phases)
 - **Concurrency**: Users will have at most 1-2 active conversations at a time
 - **Task Volume**: Users will manage 10-100 tasks on average (system should scale to 1000+ per user)
 - **Internet Connectivity**: Users have stable internet connection (no offline mode required)
-- **OpenAI API Availability**: OpenAI API has >99% uptime (graceful degradation if unavailable)
+- **Cohere API Availability**: Cohere API has >99% uptime (graceful degradation if unavailable)
 - **Data Retention**: Conversations and tasks persist indefinitely (no automatic cleanup/archival in Phase 3)
 
 ## Dependencies
 
 ### External Systems
 
-- **OpenAI API**: Required for agent natural language understanding and tool orchestration (via OpenAI Agents SDK)
+- **Cohere API**: Required for agent natural language understanding and tool orchestration (via OpenAI SDK with Cohere compatibility endpoint)
+  - **Base URL**: `https://api.cohere.ai/compatibility/v1`
+  - **Environment Variable**: `COHERE_API_KEY` (stored securely, never hardcoded)
+  - **Models**: `command-a-03-2025` (primary), `command-r-plus-08-2024` (alternative)
 - **Neon PostgreSQL**: Required for all persistent storage (tasks, conversations, messages, users)
 - **Better Auth**: Required for user authentication and JWT token generation/validation
 
@@ -251,7 +256,7 @@ As a user, I want my conversation history to persist across sessions, so I can r
 
 - **Claude Code**: All code generation via Spec-Kit Plus workflow
 - **Spec-Kit Plus**: Commands for /sp.specify, /sp.plan, /sp.tasks, /sp.implement workflow
-- **Constitution v2.0.0**: Governance principles for stateless architecture, MCP tools, agent integration
+- **Constitution v2.0.1**: Governance principles for stateless architecture, MCP tools, Cohere API integration
 
 ## Out of Scope (Phase 3)
 
@@ -334,14 +339,15 @@ The system must successfully demonstrate:
 
 ## Notes for Implementation
 
-- **MCP Tool Contracts**: Each tool must return structured JSON with success/error status and relevant data
-- **Agent System Prompt**: Define agent personality, tool descriptions, and response patterns in agent initialization
+- **MCP Tool Contracts**: Each tool must return structured JSON with success/error status and relevant data (Cohere-compatible format)
+- **Agent System Prompt**: Define agent personality, tool descriptions, and response patterns in agent initialization (optimized for Cohere's command models)
+- **Agent Client Initialization**: Use `from openai import OpenAI; client = OpenAI(api_key=os.getenv("COHERE_API_KEY"), base_url="https://api.cohere.ai/compatibility/v1")`
 - **Database Schema**: Use SQLModel with proper indexes on user_id and conversation_id for query performance
 - **Frontend Integration**: OpenAI ChatKit should proxy requests to `/api/{user_id}/chat` with JWT header
 - **Error Taxonomy**: Define standard error codes (validation_error, not_found, unauthorized, internal_error)
 - **Logging**: Log all MCP tool calls, agent responses, and errors for debugging and hackathon evaluation
-- **Constitutional Compliance**: Verify all design decisions align with Phase 3 constitution v2.0.0 principles
+- **Constitutional Compliance**: Verify all design decisions align with Phase 3 constitution v2.0.1 principles
 
 ---
 
-**Ready for Planning**: This specification is complete and ready for `/sp.plan` to generate technical architecture, MCP tool contracts, API endpoint designs, and database schemas.
+**Ready for Planning**: This specification is complete and ready for `/sp.plan` to generate technical architecture with Cohere API integration, MCP tool contracts, API endpoint designs, and database schemas.

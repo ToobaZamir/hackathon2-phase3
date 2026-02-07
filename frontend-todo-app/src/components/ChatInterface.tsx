@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/auth";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { sendChatMessage } from "@/lib/api";
+import { getToken } from "@/lib/auth";
 
 interface Message {
   role: "user" | "assistant";
@@ -12,6 +14,7 @@ interface Message {
 }
 
 export default function ChatInterface() {
+  const { user, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,16 +42,18 @@ export default function ChatInterface() {
     setError(null);
 
     try {
-      // Get JWT token and user data from localStorage
-      const token = localStorage.getItem("todo_app_auth_token");
-      const currentUserStr = localStorage.getItem("currentUser");
-
-      if (!token || !currentUserStr) {
+      // Check authentication status
+      if (!isAuthenticated || !user) {
         throw new Error("Not authenticated. Please log in.");
       }
 
-      const currentUser = JSON.parse(currentUserStr);
-      const userId = currentUser.id;
+      // Get JWT token using the auth utility
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found. Please log in again.");
+      }
+
+      const userId = user.id;
 
       // Send message to backend
       const response = await sendChatMessage(

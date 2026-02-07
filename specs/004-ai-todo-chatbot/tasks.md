@@ -106,14 +106,14 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **User Stories Served**: All stories (US1-US6) - AI agent interprets intents
 
-- [ ] T027 Create system prompt with tool guidelines and examples in backend/src/agent/system_prompt.py
-- [ ] T028 Create agent directory structure: backend/src/agent/__init__.py
-- [ ] T029 Implement Cohere client wrapper (OpenAI SDK compatibility) in backend/src/agent/cohere_client.py
-- [ ] T030 Implement AgentService with stateless design in backend/src/services/agent_service.py
-- [ ] T031 Implement tool execution logic (_execute_tool method) in AgentService
-- [ ] T032 Implement multi-step reasoning (tool chaining) in AgentService
-- [ ] T033 Integrate AgentService into chat endpoint (replace placeholder)
-- [ ] T034 Add tool call logging to message persistence
+- [X] T027 Create system prompt with tool guidelines and examples in backend/src/agent/system_prompt.py
+- [X] T028 Create agent directory structure: backend/src/agent/__init__.py
+- [X] T029 Implement Cohere client wrapper (OpenAI SDK compatibility) in backend/src/agent/cohere_client.py
+- [X] T030 Implement AgentService with stateless design in backend/src/services/agent_service.py
+- [X] T031 Implement tool execution logic (_execute_tool method) in AgentService
+- [X] T032 Implement multi-step reasoning (tool chaining) in AgentService
+- [X] T033 Integrate AgentService into chat endpoint (replace placeholder)
+- [X] T034 Add tool call logging to message persistence
 
 **Checkpoint**: Cohere agent fully integrated - can process NL commands and call MCP tools
 
@@ -127,11 +127,11 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 1
 
-- [ ] T035 [US1] Verify create_task tool (T009) handles title extraction from natural language
-- [ ] T036 [US1] Update system prompt to include task creation examples ("Add...", "Remind me to...", "Create task...")
-- [ ] T037 [US1] Test agent intent detection for task creation commands
-- [ ] T038 [US1] Add validation for empty/too-long task titles in create_task tool
-- [ ] T039 [US1] Test error handling: "Add" without task title → agent asks "What would you like to add?"
+- [X] T035 [US1] Verify create_task tool (T009) handles title extraction from natural language
+- [X] T036 [US1] Update system prompt to include task creation examples ("Add...", "Remind me to...", "Create task...")
+- [X] T037 [US1] Test agent intent detection for task creation commands
+- [X] T038 [US1] Add validation for empty/too-long task titles in create_task tool
+- [X] T039 [US1] Test error handling: "Add" without task title → agent asks "What would you like to add?"
 
 **Checkpoint**: ✅ User Story 1 complete - Users can create tasks via natural language
 
@@ -145,12 +145,12 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 2
 
-- [ ] T040 [US2] Verify list_tasks tool (T010) supports status parameter (all/pending/completed)
-- [ ] T041 [US2] Update system prompt with task listing examples ("Show my tasks", "What do I need to do?")
-- [ ] T042 [US2] Test agent intent detection for list commands with different phrasings
-- [ ] T043 [US2] Implement friendly task list formatting in agent responses (bullets, IDs, titles)
-- [ ] T044 [US2] Add empty state handling: No tasks → "You don't have any tasks yet. Would you like to add one?"
-- [ ] T045 [US2] Test status filter inference: "What do I need to do?" → status="pending"
+- [X] T040 [US2] Verify list_tasks tool (T010) supports status parameter (all/pending/completed)
+- [X] T041 [US2] Update system prompt with task listing examples ("Show my tasks", "What do I need to do?")
+- [X] T042 [US2] Test agent intent detection for list commands with different phrasings
+- [X] T043 [US2] Implement friendly task list formatting in agent responses (bullets, IDs, titles)
+- [X] T044 [US2] Add empty state handling: No tasks → "You don't have any tasks yet. Would you like to add one?"
+- [X] T045 [US2] Test status filter inference: "What do I need to do?" → status="pending"
 
 **Checkpoint**: ✅ User Story 2 complete - Users can view and filter tasks
 
@@ -164,12 +164,12 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 3
 
-- [ ] T046 [US3] Verify complete_task tool (T011) marks tasks as completed
-- [ ] T047 [US3] Update system prompt with completion examples ("Complete task X", "Mark X done", "I finished X")
-- [ ] T048 [US3] Implement tool chaining: name reference → list_tasks → complete_task with task_id
-- [ ] T049 [US3] Test ambiguous name handling: multiple matches → agent lists options and asks clarification
-- [ ] T050 [US3] Test error handling: "Complete task 999" → "I couldn't find task #999. Try 'show my tasks'."
-- [ ] T051 [US3] Add celebratory confirmation messages: "✓ Marked task #N 'Title' as complete! Great job!"
+- [X] T046 [US3] Verify complete_task tool (T011) marks tasks as completed
+- [X] T047 [US3] Update system prompt with completion examples ("Complete task X", "Mark X done", "I finished X")
+- [X] T048 [US3] Implement tool chaining: name reference → list_tasks → complete_task with task_id
+- [X] T049 [US3] Test ambiguous name handling: multiple matches → agent lists options and asks clarification
+- [X] T050 [US3] Test error handling: "Complete task 999" → "I couldn't find task #999. Try 'show my tasks'."
+- [X] T051 [US3] Add celebratory confirmation messages: "✓ Marked task #N 'Title' as complete! Great job!"
 
 **Checkpoint**: ✅ User Story 3 complete - Users can complete tasks by ID or name
 
@@ -183,12 +183,12 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 4
 
-- [ ] T052 [US4] Verify delete_task tool (T012) permanently removes tasks
-- [ ] T053 [US4] Update system prompt with deletion examples and ALWAYS confirm before delete rule
-- [ ] T054 [US4] Implement confirmation flow: First call lists task details, asks "Are you sure? Type 'yes' to confirm"
-- [ ] T055 [US4] Implement confirmation detection in conversation context (remember pending deletion)
-- [ ] T056 [US4] Test bulk deletion: "Delete all completed tasks" → list completed → ask confirmation
-- [ ] T057 [US4] Test cancellation: "Delete task 5" → "Are you sure?" → "no" → "Okay, task not deleted"
+- [X] T052 [US4] Verify delete_task tool (T012) permanently removes tasks
+- [X] T053 [US4] Update system prompt with deletion examples and ALWAYS confirm before delete rule
+- [X] T054 [US4] Implement confirmation flow: First call lists task details, asks "Are you sure? Type 'yes' to confirm"
+- [X] T055 [US4] Implement confirmation detection in conversation context (remember pending deletion)
+- [X] T056 [US4] Test bulk deletion: "Delete all completed tasks" → list completed → ask confirmation
+- [X] T057 [US4] Test cancellation: "Delete task 5" → "Are you sure?" → "no" → "Okay, task not deleted"
 
 **Checkpoint**: ✅ User Story 4 complete - Users can safely delete tasks with confirmation
 
@@ -202,12 +202,12 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 5
 
-- [ ] T058 [US5] Verify update_task tool (T013) updates title and description fields
-- [ ] T059 [US5] Update system prompt with update examples ("Update task X to Y", "Change X to Y")
-- [ ] T060 [US5] Implement tool chaining: name reference → list_tasks → update_task with task_id
-- [ ] T061 [US5] Test description updates: "Add description to task 3: Get 2% milk from Whole Foods"
-- [ ] T062 [US5] Test error handling: invalid task ID → friendly error message
-- [ ] T063 [US5] Add confirmation messages: "✓ Updated task #N to 'New Title'"
+- [X] T058 [US5] Verify update_task tool (T013) updates title and description fields
+- [X] T059 [US5] Update system prompt with update examples ("Update task X to Y", "Change X to Y")
+- [X] T060 [US5] Implement tool chaining: name reference → list_tasks → update_task with task_id
+- [X] T061 [US5] Test description updates: "Add description to task 3: Get 2% milk from Whole Foods"
+- [X] T062 [US5] Test error handling: invalid task ID → friendly error message
+- [X] T063 [US5] Add confirmation messages: "✓ Updated task #N to 'New Title'"
 
 **Checkpoint**: ✅ User Story 5 complete - Users can update task details
 
@@ -221,12 +221,12 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 ### Implementation for User Story 6
 
-- [ ] T064 [US6] Verify conversation history fetching in chat endpoint (T024)
-- [ ] T065 [US6] Test stateless architecture: Create conversation → restart server → resume conversation
-- [ ] T066 [US6] Verify agent receives full history on each request
-- [ ] T067 [US6] Test new conversation creation: No conversation_id → create new → return conversation_id
-- [ ] T068 [US6] Test conversation_id persistence: Frontend stores conversation_id, passes on subsequent requests
-- [ ] T069 [US6] Verify no in-memory state: Agent instantiated fresh every request
+- [X] T064 [US6] Verify conversation history fetching in chat endpoint (T024)
+- [X] T065 [US6] Test stateless architecture: Create conversation → restart server → resume conversation
+- [X] T066 [US6] Verify agent receives full history on each request
+- [X] T067 [US6] Test new conversation creation: No conversation_id → create new → return conversation_id
+- [X] T068 [US6] Test conversation_id persistence: Frontend stores conversation_id, passes on subsequent requests
+- [X] T069 [US6] Verify no in-memory state: Agent instantiated fresh every request
 
 **Checkpoint**: ✅ User Story 6 complete - Conversations persist across server restarts (stateless architecture proven)
 

@@ -7,6 +7,7 @@ from backend.src.schemas.chat import ChatRequest, ChatResponse
 from backend.src.core.auth import get_current_user
 from backend.src.database.connection import get_session
 from backend.src.services.conversation_service import ConversationService
+from backend.src.services.agent_service import AgentService
 from backend.src.models.user import User
 
 router = APIRouter()
@@ -78,16 +79,22 @@ async def chat(
         content=request.message
     )
 
-    # 5. Execute agent (placeholder for now - will be replaced in Phase 5)
-    # TODO: Replace with actual Cohere agent execution
-    agent_response_text = f"[Placeholder] Received your message: '{request.message}'. Agent integration pending."
-    tool_calls_log = None
+    # 5. Execute agent with Cohere and MCP tools
+    agent_service = AgentService()
 
-    # Temporary: Echo message until agent is integrated
-    if "add" in request.message.lower() or "create" in request.message.lower():
-        agent_response_text = "✓ Task creation will be available once the Cohere agent is integrated (Phase 5)."
-    elif "list" in request.message.lower() or "show" in request.message.lower():
-        agent_response_text = "✓ Task listing will be available once the Cohere agent is integrated (Phase 5)."
+    try:
+        agent_response = await agent_service.execute(
+            user_id=user_id,
+            message=request.message,
+            history=history
+        )
+        agent_response_text = agent_response["message"]
+        tool_calls_log = agent_response.get("tool_calls")
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Agent execution failed: {str(e)}"
+        )
 
     # 6. Save agent response to DB
     assistant_message = conversation_service.add_message(

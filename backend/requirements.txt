@@ -1,15 +1,28 @@
+# Core Framework
 fastapi==0.104.1
 sqlmodel==0.0.16
 pydantic==2.5.0
 pydantic-settings==2.1.0
 uvicorn==0.24.0
+
+# Database
 psycopg2-binary==2.9.9
 alembic==1.13.1
 asyncpg==0.29.0
-python-dotenv==1.0.0
-pytest==7.4.3
-pytest-asyncio==0.21.1
-httpx==0.25.2
 SQLAlchemy==2.0.23
+
+# Authentication
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+
+# AI Integration (Phase 3)
+cohere==5.9.3
+openai==1.52.2
+
+# Utilities
+python-dotenv==1.0.0
+httpx==0.25.2
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1

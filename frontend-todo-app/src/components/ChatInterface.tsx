@@ -14,11 +14,16 @@ interface Message {
 }
 
 export default function ChatInterface() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Debug: Log auth state
+  useEffect(() => {
+    console.log("Auth state:", { user, isAuthenticated, authLoading });
+  }, [user, isAuthenticated, authLoading]);
 
   // Load conversation ID from localStorage on mount
   useEffect(() => {
@@ -42,18 +47,25 @@ export default function ChatInterface() {
     setError(null);
 
     try {
+      // Debug logging
+      console.log("Attempting to send message...");
+      console.log("Auth state:", { isAuthenticated, user, hasToken: !!getToken() });
+
       // Check authentication status
       if (!isAuthenticated || !user) {
+        console.error("Auth check failed:", { isAuthenticated, user });
         throw new Error("Not authenticated. Please log in.");
       }
 
       // Get JWT token using the auth utility
       const token = getToken();
       if (!token) {
+        console.error("No token found in localStorage");
         throw new Error("No authentication token found. Please log in again.");
       }
 
       const userId = user.id;
+      console.log("Sending message for user:", userId);
 
       // Send message to backend
       const response = await sendChatMessage(

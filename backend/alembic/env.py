@@ -6,11 +6,19 @@ from alembic import context
 from sqlmodel import SQLModel
 import sys
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add the src directory to the path so we can import our models
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.models.task import Task  # Import your models
+# Import all models so SQLModel knows about them
+from src.models.task import Task
+from src.models.user import User
+from src.models.conversation import Conversation
+from src.models.message import Message
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -62,15 +70,15 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    from sqlalchemy import create_engine  # add this at the top if not already
+    # Directly get DATABASE_URL from environment
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Directly get DATABASE_URL from environment
-DATABASE_URL = os.getenv("DATABASE_URL")
-connectable = create_engine(DATABASE_URL, poolclass=pool.NullPool)
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL environment variable is not set")
 
-    
+    connectable = create_engine(DATABASE_URL, poolclass=pool.NullPool)
 
-with connectable.connect() as connection:
+    with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata
         )

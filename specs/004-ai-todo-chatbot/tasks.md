@@ -36,8 +36,8 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 - [X] T002 [P] Create Message SQLModel with MessageRole enum in backend/src/models/message.py
 - [X] T003 Generate Alembic migration 002_add_conversations_table.py in backend/alembic/versions/
 - [X] T004 Generate Alembic migration 003_add_messages_table.py in backend/alembic/versions/
-- [ ] T005 Run migrations with `alembic upgrade head` and verify tables in Neon DB
-- [ ] T006 Create ConversationService with CRUD operations in backend/src/services/conversation_service.py
+- [X] T005 Run migrations with `alembic upgrade head` and verify tables in Neon DB
+- [X] T006 Create ConversationService with CRUD operations in backend/src/services/conversation_service.py
 
 **Checkpoint**: Database schema supports conversations and messages - ready for MCP tools
 

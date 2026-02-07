@@ -71,6 +71,15 @@ export default function ChatInterface() {
       const userId = currentUser.id;
       console.log("✅ Auth successful! User ID:", userId);
 
+    // 🔥 IMPORTANT FIX: invalid conversationId clear karo
+    let safeConversationId = conversationId;
+
+   if (conversationId && conversationId <= 0) {
+     safeConversationId = null;
+     setConversationId(null);
+     localStorage.removeItem("conversationId");
+}
+
       // Send message to backend
       const response = await sendChatMessage(
         userId,

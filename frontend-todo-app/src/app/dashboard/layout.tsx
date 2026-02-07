@@ -47,6 +47,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <nav>
             <ul className="flex items-center space-x-4">
               <li>
+                <Link href="/dashboard">
+                  <Button variant="ghost">Tasks</Button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/chat">
+                  <Button variant="default" className="bg-blue-600 hover:bg-blue-700">
+                    🤖 AI Chat
+                  </Button>
+                </Link>
+              </li>
+              <li>
                 <span className="text-gray-700">Welcome, {user?.name || user?.email}</span>
               </li>
               <li>

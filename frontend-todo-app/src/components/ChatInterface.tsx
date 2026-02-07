@@ -39,13 +39,16 @@ export default function ChatInterface() {
     setError(null);
 
     try {
-      // Get JWT token from localStorage or auth context
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
+      // Get JWT token and user data from localStorage
+      const token = localStorage.getItem("todo_app_auth_token");
+      const currentUserStr = localStorage.getItem("currentUser");
 
-      if (!token || !userId) {
+      if (!token || !currentUserStr) {
         throw new Error("Not authenticated. Please log in.");
       }
+
+      const currentUser = JSON.parse(currentUserStr);
+      const userId = currentUser.id;
 
       // Send message to backend
       const response = await sendChatMessage(

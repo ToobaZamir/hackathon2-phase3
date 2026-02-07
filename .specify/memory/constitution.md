@@ -1,23 +1,21 @@
 <!-- Sync Impact Report:
-Version change: 1.0.0 → 2.0.0
+Version change: 2.0.0 → 2.0.1
 Modified principles:
-  - Spec-First Development: Enhanced with Agentic Dev Stack workflow requirement
-  - Security-by-Design: Expanded with Better Auth integration and stateless auth patterns
-  - API-First Architecture: Updated to include MCP tools and OpenAI Agents SDK integration
-  - Separation of Concerns: Enhanced with stateless design requirements
+  - AI Agent Integration (Principle 5): Updated LLM provider from OpenAI to Cohere API
+  - Technology Stack Constraints: Updated AI Integration section with Cohere specifics
+  - Stateless Architecture (Principle 3): Updated agent references from "OpenAI Agent" to "AI Agent (Cohere-powered)"
+Amendment type: PATCH (implementation detail clarification, not architectural change)
+Reason for change: Better cost/performance for tool-heavy workflows, strong multilingual NLP, reliable multi-step reasoning
 Added sections:
-  - Agentic Development Workflow (replaces manual Deterministic Reproducibility)
-  - Stateless Architecture (new principle)
-  - MCP Tool Integration (new principle)
-  - AI Agent Integration (new principle)
-  - Natural Language Interface (new principle)
-Removed sections:
-  - Generic "Deterministic Reproducibility" (replaced with specific Phase 3 requirements)
+  - Amendment History (new section documenting constitutional changes)
+Removed sections: None
 Templates requiring updates:
-  ✅ .specify/templates/plan-template.md - Constitution Check section aligned
-  ✅ .specify/templates/spec-template.md - Success criteria aligned with stateless patterns
-  ✅ .specify/templates/tasks-template.md - Task categorization includes agent/MCP phases
-Follow-up TODOs: None
+  ⚠️ .specify/templates/plan-template.md - Review AI integration technical context
+  ⚠️ specs/004-ai-todo-chatbot/spec.md - Update external dependencies from OpenAI to Cohere
+Follow-up TODOs:
+  - Create ADR documenting OpenAI → Cohere migration rationale
+  - Update any existing plan.md files referencing OpenAI API
+  - Verify MCP tool schemas are Cohere-compatible (JSON format)
 -->
 
 # Hackathon II Phase 3: Todo AI Chatbot Constitution
@@ -25,7 +23,7 @@ Follow-up TODOs: None
 ## Project Identity
 
 **Project Name**: Todo AI Chatbot (Phase 3)
-**Version**: 2.0.0
+**Version**: 2.0.1
 **Ratified**: 2026-02-07
 **Last Amended**: 2026-02-07
 **Scope**: AI-powered conversational todo management system with natural language interface
@@ -66,12 +64,12 @@ Follow-up TODOs: None
 
 ### 3. Stateless Architecture
 
-**Rule**: All server components (FastAPI, MCP Server, OpenAI Agent) MUST be stateless. No in-memory state allowed.
+**Rule**: All server components (FastAPI, MCP Server, AI Agent) MUST be stateless. No in-memory state allowed.
 
 **Requirements**:
 - **No in-memory storage**: No global variables, no session caches, no singleton state
 - **Database persistence**: All state (tasks, conversations, messages, tool calls) stored in PostgreSQL
-- **Fresh instantiation**: OpenAI Agent must be instantiated fresh on each request
+- **Fresh instantiation**: AI Agent (Cohere-powered) must be instantiated fresh on each request
 - **History retrieval**: Full conversation history fetched from database on every chat request
 - **Stateless MCP tools**: Each MCP tool call operates independently with no shared state
 - **Session management**: Use Better Auth for authentication tokens, not server-side sessions
@@ -92,6 +90,7 @@ Follow-up TODOs: None
   - `delete_task(user_id, task_id)` - Remove task
   - `complete_task(user_id, task_id)` - Shortcut for marking complete
 - **Tool Implementation**: Use Official MCP Python SDK server patterns
+- **Tool Schema Format**: Cohere-compatible JSON schema for tool definitions (similar to OpenAI function calling format)
 - **Database Access**: All tools must use SQLModel for database operations
 - **Stateless Design**: Each tool call is independent with no shared context
 - **Error Handling**: Return structured error objects for all failure cases
@@ -103,18 +102,25 @@ Follow-up TODOs: None
 
 ### 5. AI Agent Integration
 
-**Rule**: Natural language processing must be handled exclusively through OpenAI Agents SDK with MCP tool orchestration.
+**Rule**: Natural language processing must be handled through Cohere API with MCP tool orchestration.
 
 **Requirements**:
-- **Agent Framework**: OpenAI Agents SDK only (no custom LLM integrations)
-- **Tool Orchestration**: Agent must call MCP tools via MCP client
+- **LLM Provider**: Cohere API only (via OpenAI-compatible endpoint for minimal code changes)
+- **Primary Model**: `command-a-03-2025` (or latest Command A variant optimized for agentic workflows and tool use)
+- **Alternative Model**: `command-r-plus-08-2024` (for complex multi-step reasoning and long context scenarios)
+- **API Configuration**:
+  - Base URL: `https://api.cohere.ai/compatibility/v1`
+  - Client initialization: `from openai import OpenAI; client = OpenAI(api_key=COHERE_API_KEY, base_url="https://api.cohere.ai/compatibility/v1")`
+  - Environment variable: `COHERE_API_KEY` (never hardcoded)
+- **Integration Method**: Use OpenAI SDK with Cohere compatibility endpoint (allows reusing OpenAI Agents SDK patterns if compatible) OR Cohere native SDK for tool calling
+- **Tool Orchestration**: Agent must call MCP tools via MCP client using Cohere's tool calling capabilities
 - **Multi-step Reasoning**: Agent may chain tool calls (e.g., `list_tasks` before `delete_task` for name resolution)
 - **Stateless Execution**: Fresh agent instance on every chat request
 - **System Prompt**: Define agent behavior, available tools, and response patterns in system prompt
 - **Tool Call Logging**: All tool calls and responses must be persisted to database
 - **Error Recovery**: Agent must gracefully handle tool errors and provide helpful user feedback
 
-**Rationale**: Leverages proven agent framework, separates AI logic from business logic, enables natural language understanding without custom NLP, and maintains flexibility to swap agents.
+**Rationale**: Cohere provides better cost/performance for tool-heavy agent workflows, strong multilingual support for natural language todos, reliable multi-step reasoning, and robust tool calling capabilities. OpenAI-compatible endpoint minimizes code changes while enabling Cohere's advantages.
 
 ---
 
@@ -152,7 +158,7 @@ Follow-up TODOs: None
 - **Data Isolation**: Users can only access their own tasks and conversations
 - **Cross-User Access Prevention**: 403 Forbidden for attempts to access other users' data
 - **Error Security**: Never reveal existence of other users' resources (404, not 403, for inaccessible items)
-- **No Hardcoded Secrets**: All secrets via environment variables
+- **No Hardcoded Secrets**: All secrets via environment variables (including `COHERE_API_KEY`)
 - **Database Security**: Use parameterized queries (SQLModel ORM) to prevent SQL injection
 
 **Rationale**: Protects user data, prevents unauthorized access, meets security standards for production deployment, and demonstrates security-first approach for hackathon evaluation.
@@ -203,17 +209,17 @@ Follow-up TODOs: None
   - API endpoints and business logic
   - Authentication validation
   - Database operations via SQLModel
-  - Agent orchestration
+  - Agent orchestration (Cohere API integration)
   - Stateless (no session storage)
 - **MCP Server**:
   - Tool implementations only
   - Database CRUD via SQLModel
   - No business logic (delegated to agent)
   - Stateless tool execution
-- **AI Agent (OpenAI Agents SDK)**:
+- **AI Agent (Cohere-powered via OpenAI SDK compatibility)**:
   - Natural language understanding
   - Intent detection and entity extraction
-  - Tool orchestration (calls MCP tools)
+  - Tool orchestration (calls MCP tools using Cohere's tool calling)
   - Response generation
   - Fresh instantiation per request
 - **Database (Neon PostgreSQL)**:
@@ -257,9 +263,12 @@ Follow-up TODOs: None
 - UI Library: OpenAI ChatKit components only
 
 **AI Integration**:
-- Agent Framework: OpenAI Agents SDK only
-- Tool Protocol: Official MCP Python SDK only
-- LLM Provider: OpenAI API (via Agents SDK)
+- **LLM Provider**: Cohere API only
+- **Primary Model**: `command-a-03-2025` (or latest Command A variant for tool use/agentic workflows)
+- **Alternative Model**: `command-r-plus-08-2024` (for complex reasoning, long context)
+- **Integration Method**: OpenAI SDK with Cohere compatibility endpoint (`https://api.cohere.ai/compatibility/v1`) OR Cohere native SDK
+- **Tool Protocol**: Official MCP Python SDK only
+- **API Key**: `COHERE_API_KEY` environment variable (never hardcoded)
 
 **Authentication**:
 - Framework: Better Auth only
@@ -274,13 +283,13 @@ Follow-up TODOs: None
 - ❌ Manual code editing (must use Claude Code)
 - ❌ Alternative ORMs (SQLAlchemy, Django ORM, etc.)
 - ❌ Alternative databases (MongoDB, MySQL, SQLite, etc.)
-- ❌ Alternative agent frameworks (LangChain, AutoGPT, custom agents)
+- ❌ Alternative LLM providers (OpenAI native, Anthropic Claude direct, custom models)
 - ❌ Alternative MCP implementations (custom protocols)
 - ❌ Server-side session storage (Redis, Memcached, in-memory sessions)
 - ❌ Monolithic architecture (all components must be separable)
 - ❌ Hardcoded credentials or secrets
 
-**Rationale**: Stack constraints ensure consistency, simplify integration, meet hackathon requirements, and prevent scope creep from technology exploration.
+**Rationale**: Stack constraints ensure consistency, simplify integration, meet hackathon requirements, and prevent scope creep from technology exploration. Cohere provides superior cost/performance for tool-heavy agentic workflows.
 
 ---
 
@@ -324,14 +333,14 @@ Follow-up TODOs: None
    - Database schema
    - API endpoint definitions
    - MCP tool definitions (if applicable)
-   - Agent behavior design (if applicable)
+   - Agent behavior design (Cohere-specific tool calling patterns)
 4. Review for constitutional compliance
 5. Suggest ADRs for significant decisions
 
 **Exit Condition**: Complete plan with all design artifacts, constitutional compliance verified
 
 **Constitution Check**:
-- Stack matches mandatory technologies
+- Stack matches mandatory technologies (Cohere API, not OpenAI)
 - Stateless design confirmed
 - Security patterns included
 - No prohibited technologies used
@@ -391,8 +400,8 @@ Follow-up TODOs: None
 
 **Constitution Check**:
 - No manual code edits
-- All generated code follows stack constraints
-- Security patterns implemented
+- All generated code follows stack constraints (Cohere API, not OpenAI)
+- Security patterns implemented (COHERE_API_KEY in environment)
 - Stateless design maintained
 
 ---
@@ -403,7 +412,7 @@ Follow-up TODOs: None
 
 **Process**:
 1. Run `/sp.analyze` to validate cross-artifact consistency
-2. Update README with new feature documentation
+2. Update README with new feature documentation (including Cohere setup instructions)
 3. Create ADRs for significant decisions (if not already done)
 4. Generate pull request with `/sp.git.commit_pr`
 5. Link PR to spec, tasks, and PHRs
@@ -423,8 +432,15 @@ Follow-up TODOs: None
 2. **Fetch Conversation**: Load or create conversation from database
 3. **Retrieve History**: Query all messages for conversation from database
 4. **Save User Message**: Insert user's message into database
-5. **Instantiate Agent**: Create fresh OpenAI Agent with MCP tools (no reuse)
-6. **Execute Agent**: Run agent with full history + new message
+5. **Instantiate Agent**: Create fresh Cohere-powered client with MCP tools (no reuse)
+   ```python
+   from openai import OpenAI
+   client = OpenAI(
+       api_key=os.getenv("COHERE_API_KEY"),
+       base_url="https://api.cohere.ai/compatibility/v1"
+   )
+   ```
+6. **Execute Agent**: Run agent with full history + new message using Cohere's Command model
 7. **Save Agent Response**: Insert agent's message into database
 8. **Persist Tool Calls**: Log all MCP tool calls and results to database
 9. **Return Response**: Send agent response + tool calls to client
@@ -445,7 +461,7 @@ Follow-up TODOs: None
 2. **Open Database Session**: Create fresh SQLModel session
 3. **Execute Operation**: Perform CRUD operation (create, read, update, delete)
 4. **Commit Transaction**: Save changes to database
-5. **Return Result**: Send structured response to agent
+5. **Return Result**: Send structured response to agent (Cohere-compatible JSON format)
 6. **Close Session**: Clean up database connection
 
 **Anti-Patterns (Prohibited)**:
@@ -548,9 +564,9 @@ Before starting any implementation:
 - [ ] Plan exists in `specs/[###-feature-name]/plan.md`
 - [ ] Tasks exist in `specs/[###-feature-name]/tasks.md`
 - [ ] All `[NEEDS CLARIFICATION]` markers resolved
-- [ ] Technology stack matches constitution constraints
+- [ ] Technology stack matches constitution constraints (Cohere API, not OpenAI)
 - [ ] Stateless design confirmed in plan
-- [ ] Security patterns documented
+- [ ] Security patterns documented (COHERE_API_KEY environment variable)
 - [ ] No prohibited technologies listed
 
 ### Post-Implementation Checklist
@@ -558,7 +574,7 @@ Before starting any implementation:
 After completing implementation:
 - [ ] All tasks in `tasks.md` marked complete
 - [ ] PHR created for implementation session
-- [ ] README updated with new feature documentation
+- [ ] README updated with new feature documentation (including Cohere setup)
 - [ ] API endpoints follow RESTful conventions
 - [ ] HTTP status codes used correctly
 - [ ] Pydantic v2 models for all schemas
@@ -566,11 +582,12 @@ After completing implementation:
 - [ ] JWT validation on all authenticated endpoints
 - [ ] User data isolation enforced
 - [ ] Stateless design maintained (no global state)
-- [ ] Agent instantiated fresh on each request
+- [ ] Agent instantiated fresh on each request (Cohere client)
 - [ ] Conversation history fetched from database
 - [ ] All tool calls logged to database
 - [ ] Error messages are user-friendly
 - [ ] Code generated via Claude Code only (no manual edits)
+- [ ] COHERE_API_KEY properly configured in environment
 
 ### ADR Decision Criteria
 
@@ -580,12 +597,47 @@ Create an ADR when decision meets ALL three criteria:
 3. **Scope**: Cross-cutting, influences system design
 
 **Examples requiring ADRs**:
+- ✅ Choice of Cohere over OpenAI (LLM provider selection)
 - ✅ Choice of MCP SDK over custom protocol
 - ✅ Stateless vs stateful architecture decision
 - ✅ JWT-based auth vs session-based auth
 - ✅ Agent instantiation strategy (fresh vs pooled)
 - ❌ Variable naming convention (too local)
 - ❌ Log level choice (reversible, low impact)
+
+---
+
+## Amendment History
+
+### Amendment 1: LLM Provider Migration (2026-02-07)
+
+**Version**: 2.0.0 → 2.0.1 (PATCH)
+**Type**: Implementation detail clarification
+**Scope**: AI Integration (Principle 5), Technology Stack Constraints
+
+**Change Summary**:
+- **From**: OpenAI API (gpt-4, gpt-3.5-turbo)
+- **To**: Cohere API (command-a-03-2025, command-r-plus-08-2024)
+- **Integration Method**: OpenAI SDK with Cohere compatibility endpoint (`https://api.cohere.ai/compatibility/v1`)
+- **Environment Variable**: `OPENAI_API_KEY` → `COHERE_API_KEY`
+
+**Rationale**:
+1. **Cost/Performance**: Cohere provides better pricing and performance for tool-heavy agentic workflows
+2. **Multilingual NLP**: Stronger multilingual support useful for natural language todo management
+3. **Multi-step Reasoning**: Reliable multi-step reasoning and tool chaining capabilities
+4. **Tool Calling**: Robust native support for tool/function calling (similar to OpenAI)
+
+**Impact**:
+- Minimal code changes (OpenAI SDK compatibility endpoint allows reuse of patterns)
+- MCP tool schemas remain compatible (JSON format works for both providers)
+- All other architectural principles unchanged (stateless, MCP integration, FastAPI, etc.)
+
+**Follow-up Actions**:
+- [ ] Create ADR documenting OpenAI → Cohere migration decision
+- [ ] Update specs/004-ai-todo-chatbot/spec.md external dependencies section
+- [ ] Verify MCP tool JSON schemas are Cohere-compatible
+- [ ] Update README with Cohere API setup instructions
+- [ ] Test Cohere's Command models with MCP tool calling patterns
 
 ---
 
@@ -607,15 +659,15 @@ This constitution governs all development for Hackathon II Phase 3: Todo AI Chat
 **Version Bump Rules**:
 - **MAJOR** (X.0.0): Backward-incompatible changes, principle removal/redefinition
 - **MINOR** (x.Y.0): New principle added, materially expanded guidance
-- **PATCH** (x.y.Z): Clarifications, wording fixes, non-semantic refinements
+- **PATCH** (x.y.Z): Clarifications, wording fixes, non-semantic refinements, implementation detail updates
 
 ### Compliance Review
 
 **Before Each Phase Transition**:
 - Verify all constitutional requirements met
-- Check technology stack constraints
+- Check technology stack constraints (Cohere API, not OpenAI)
 - Validate stateless design patterns
-- Confirm security measures implemented
+- Confirm security measures implemented (COHERE_API_KEY environment variable)
 - Review traceability artifacts (specs, plans, tasks, PHRs)
 
 **Enforcement**:
@@ -631,14 +683,14 @@ This constitution is designed to maximize hackathon scores:
 **Process Transparency** (Critical):
 - All PHRs demonstrate iterative development
 - Specs, plans, tasks show systematic approach
-- ADRs document architectural decisions
+- ADRs document architectural decisions (including LLM provider choice)
 - README shows complete setup and usage
 
 **Technical Quality**:
 - Stateless architecture demonstrates scalability
 - Security-first approach shows production-readiness
 - MCP integration shows modern tooling
-- AI agent integration demonstrates innovation
+- AI agent integration demonstrates innovation (Cohere's advanced tool calling)
 
 **Reproducibility**:
 - Agentic workflow ensures repeatability
@@ -647,7 +699,7 @@ This constitution is designed to maximize hackathon scores:
 
 ---
 
-**Version**: 2.0.0
+**Version**: 2.0.1
 **Ratified**: 2026-02-07
-**Last Amended**: 2026-02-07
+**Last Amended**: 2026-02-07 (Amendment 1: Cohere API migration)
 **Next Review**: Before Phase 4 (if project continues beyond Phase 3)

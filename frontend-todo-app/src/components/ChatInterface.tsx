@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/auth";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { sendChatMessage } from "@/lib/api";
@@ -13,17 +12,17 @@ interface Message {
   timestamp?: string;
 }
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
 export default function ChatInterface() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Debug: Log auth state
-  useEffect(() => {
-    console.log("Auth state:", { user, isAuthenticated, authLoading });
-  }, [user, isAuthenticated, authLoading]);
 
   // Load conversation ID from localStorage on mount
   useEffect(() => {
@@ -47,29 +46,24 @@ export default function ChatInterface() {
     setError(null);
 
     try {
-      // Debug logging
-      console.log("Attempting to send message...");
-      console.log("Auth state:", { isAuthenticated, user, hasToken: !!getToken() });
-
-      // Check authentication status
-      if (!isAuthenticated || !user) {
-        console.error("Auth check failed:", { isAuthenticated, user });
-        throw new Error("Not authenticated. Please log in.");
-      }
-
-      // Get JWT token using the auth utility
+      // Get authentication data directly from localStorage
       const token = getToken();
+      const currentUserStr = localStorage.getItem("currentUser");
+
       if (!token) {
-        console.error("No token found in localStorage");
-        throw new Error("No authentication token found. Please log in again.");
+        throw new Error("No authentication token found. Please log in.");
       }
 
-      const userId = user.id;
-      console.log("Sending message for user:", userId);
+      if (!currentUserStr) {
+        throw new Error("User data not found. Please log in again.");
+      }
+
+      const currentUser: User = JSON.parse(currentUserStr);
+      const userId = currentUser.id;
 
       // Send message to backend
       const response = await sendChatMessage(
-        parseInt(userId, 10),
+        userId,
         message,
         conversationId,
         token

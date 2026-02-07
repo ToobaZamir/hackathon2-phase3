@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     environment: str = os.getenv("ENVIRONMENT", "development")
     debug: bool = os.getenv("DEBUG", "True").lower() == "true"
 
+    # Cohere API settings (Phase 3)
+    cohere_api_key: str = os.getenv("COHERE_API_KEY", "")
+    cohere_model: str = os.getenv("COHERE_MODEL", "command-a-03-2025")
+    cohere_base_url: str = os.getenv("COHERE_BASE_URL", "https://api.cohere.ai/compatibility/v1")
+
     class Config:
         env_file = ".env"
 

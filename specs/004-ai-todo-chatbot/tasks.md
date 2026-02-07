@@ -49,15 +49,15 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **Goal**: Provide standardized tool interface between AI agent and database operations
 
-- [ ] T007 Create MCP server directory structure: backend/mcp_server/tools/ and backend/mcp_server/schemas/
-- [ ] T008 Define Cohere-compatible tool schemas in backend/mcp_server/schemas/tool_definitions.py
-- [ ] T009 [P] [US1] Implement create_task tool in backend/mcp_server/tools/create_task.py
-- [ ] T010 [P] [US2] Implement list_tasks tool with status filter in backend/mcp_server/tools/list_tasks.py
-- [ ] T011 [P] [US3] Implement complete_task tool in backend/mcp_server/tools/complete_task.py
-- [ ] T012 [P] [US4] Implement delete_task tool in backend/mcp_server/tools/delete_task.py
-- [ ] T013 [P] [US5] Implement update_task tool in backend/mcp_server/tools/update_task.py
-- [ ] T014 Create __init__.py with tool exports in backend/mcp_server/tools/__init__.py
-- [ ] T015 Create MCP server initialization in backend/mcp_server/server.py
+- [X] T007 Create MCP server directory structure: backend/mcp_server/tools/ and backend/mcp_server/schemas/
+- [X] T008 Define Cohere-compatible tool schemas in backend/mcp_server/schemas/tool_definitions.py
+- [X] T009 [P] [US1] Implement create_task tool in backend/mcp_server/tools/create_task.py
+- [X] T010 [P] [US2] Implement list_tasks tool with status filter in backend/mcp_server/tools/list_tasks.py
+- [X] T011 [P] [US3] Implement complete_task tool in backend/mcp_server/tools/complete_task.py
+- [X] T012 [P] [US4] Implement delete_task tool in backend/mcp_server/tools/delete_task.py
+- [X] T013 [P] [US5] Implement update_task tool in backend/mcp_server/tools/update_task.py
+- [X] T014 Create __init__.py with tool exports in backend/mcp_server/tools/__init__.py
+- [X] T015 Create MCP server initialization in backend/mcp_server/server.py
 
 **Checkpoint**: All 5 MCP tools implemented with Cohere-compatible schemas - ready for agent integration
 
@@ -69,9 +69,9 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **Goal**: Ensure secure access to chat endpoint with Cohere API integration
 
-- [ ] T016 [P] Update config to add COHERE_API_KEY and COHERE_MODEL in backend/src/core/config.py
-- [ ] T017 [P] Create .env.example with all Phase 3 environment variables in backend/.env.example
-- [ ] T018 Verify JWT middleware get_current_user() function in backend/src/core/auth.py
+- [X] T016 [P] Update config to add COHERE_API_KEY and COHERE_MODEL in backend/src/core/config.py
+- [X] T017 [P] Create .env.example with all Phase 3 environment variables in backend/.env.example
+- [X] T018 Verify JWT middleware get_current_user() function in backend/src/core/auth.py
 
 **Checkpoint**: Configuration ready - Cohere API key configured, JWT validation verified
 
@@ -85,14 +85,14 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **User Stories Served**: All stories (US1-US6) - shared infrastructure
 
-- [ ] T019 [P] [US6] Create ChatRequest and ChatResponse schemas in backend/src/schemas/chat.py
-- [ ] T020 [US6] Implement stateless chat endpoint POST /api/{user_id}/chat in backend/src/api/v1/chat.py
-- [ ] T021 [US6] Register chat router in FastAPI app in backend/src/main.py
-- [ ] T022 [US6] Add JWT validation and user_id authorization to chat endpoint
-- [ ] T023 [US6] Implement conversation get/create logic using ConversationService
-- [ ] T024 [US6] Implement conversation history fetching from database
-- [ ] T025 [US6] Implement message persistence (user + assistant) after agent execution
-- [ ] T026 [US6] Add error handling for 401/403/404/500 responses
+- [X] T019 [P] [US6] Create ChatRequest and ChatResponse schemas in backend/src/schemas/chat.py
+- [X] T020 [US6] Implement stateless chat endpoint POST /api/{user_id}/chat in backend/src/api/v1/chat.py
+- [X] T021 [US6] Register chat router in FastAPI app in backend/src/main.py
+- [X] T022 [US6] Add JWT validation and user_id authorization to chat endpoint
+- [X] T023 [US6] Implement conversation get/create logic using ConversationService
+- [X] T024 [US6] Implement conversation history fetching from database
+- [X] T025 [US6] Implement message persistence (user + assistant) after agent execution
+- [X] T026 [US6] Add error handling for 401/403/404/500 responses
 
 **Checkpoint**: Chat endpoint functional (placeholder agent) - ready for Cohere agent integration
 

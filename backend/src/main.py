@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 import logging
 
-from src.api.v1 import tasks, auth
+from src.api.v1 import tasks, auth, chat
 from src.core.config import settings
 from src.database.connection import engine
 from src.core.error_handlers import (
@@ -62,6 +62,7 @@ app.add_exception_handler(500, general_exception_handler)
 # ---------------- ROUTES ----------------
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(tasks.router, prefix="/api/todos", tags=["tasks"])
+app.include_router(chat.router, prefix="/api", tags=["chat"])  # Phase 3: Conversational interface
 
 # ---------------- ROOT ----------------
 @app.get("/")

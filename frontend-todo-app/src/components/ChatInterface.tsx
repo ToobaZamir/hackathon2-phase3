@@ -50,16 +50,26 @@ export default function ChatInterface() {
       const token = getToken();
       const currentUserStr = localStorage.getItem("currentUser");
 
+      // Extensive debugging
+      console.log("=== CHAT SEND DEBUG ===");
+      console.log("Token from getToken():", token ? `${token.substring(0, 20)}...` : "NULL");
+      console.log("currentUser from localStorage:", currentUserStr ? "EXISTS" : "NULL");
+      console.log("All localStorage keys:", Object.keys(localStorage));
+
       if (!token) {
+        console.error("❌ No token found!");
+        console.log("Checking localStorage directly:", localStorage.getItem("todo_app_auth_token"));
         throw new Error("No authentication token found. Please log in.");
       }
 
       if (!currentUserStr) {
+        console.error("❌ No currentUser found!");
         throw new Error("User data not found. Please log in again.");
       }
 
       const currentUser: User = JSON.parse(currentUserStr);
       const userId = currentUser.id;
+      console.log("✅ Auth successful! User ID:", userId);
 
       // Send message to backend
       const response = await sendChatMessage(

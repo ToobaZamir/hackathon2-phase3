@@ -1,8 +1,8 @@
 """MCP tool for creating tasks."""
 from sqlmodel import Session
 from typing import Optional, Dict, Any
-from backend.src.models.task import Task
-from backend.src.database.connection import engine
+from src.models.task import Task
+from src.database.connection import engine
 
 
 async def create_task(

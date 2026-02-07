@@ -3,12 +3,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from typing import Dict, Any
 
-from backend.src.schemas.chat import ChatRequest, ChatResponse
-from backend.src.core.auth import get_current_user
-from backend.src.database.connection import get_session
-from backend.src.services.conversation_service import ConversationService
-from backend.src.services.agent_service import AgentService
-from backend.src.models.user import User
+from src.schemas.chat import ChatRequest, ChatResponse
+from src.core.auth import get_current_user
+from src.database.connection import get_session
+from src.services.conversation_service import ConversationService
+from src.services.agent_service import AgentService
+from src.models.user import User
 
 router = APIRouter()
 

@@ -1,8 +1,8 @@
 """MCP tool for updating tasks."""
 from sqlmodel import Session, select
 from typing import Optional, Dict, Any
-from backend.src.models.task import Task
-from backend.src.database.connection import engine
+from src.models.task import Task
+from src.database.connection import engine
 
 
 async def update_task(

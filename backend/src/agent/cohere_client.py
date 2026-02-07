@@ -2,7 +2,7 @@
 from openai import OpenAI
 from typing import List, Dict, Any, Optional
 import os
-from backend.src.core.config import settings
+from src.core.config import settings
 
 
 class CohereClient:

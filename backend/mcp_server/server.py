@@ -1,13 +1,13 @@
 """MCP Server initialization and tool registry."""
 from typing import Dict, Any, Callable
-from backend.mcp_server.tools import (
+from mcp_server.tools import (
     create_task,
     list_tasks,
     complete_task,
     delete_task,
     update_task
 )
-from backend.mcp_server.schemas.tool_definitions import MCP_TOOLS
+from mcp_server.schemas.tool_definitions import MCP_TOOLS
 
 
 class MCPServer:

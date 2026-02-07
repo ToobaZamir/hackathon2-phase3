@@ -3,8 +3,8 @@ from sqlmodel import Session, select
 from typing import List, Dict, Optional
 from datetime import datetime
 
-from backend.src.models.conversation import Conversation, ConversationCreate
-from backend.src.models.message import Message, MessageCreate, MessageRole
+from src.models.conversation import Conversation, ConversationCreate
+from src.models.message import Message, MessageCreate, MessageRole
 
 
 class ConversationService:

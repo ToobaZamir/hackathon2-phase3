@@ -1,10 +1,10 @@
 """Service for executing Cohere-powered AI agent with MCP tools."""
 import json
 from typing import List, Dict, Any
-from backend.src.agent.cohere_client import CohereClient
-from backend.src.agent.system_prompt import SYSTEM_PROMPT
-from backend.mcp_server.schemas.tool_definitions import MCP_TOOLS
-from backend.mcp_server.server import mcp_server
+from src.agent.cohere_client import CohereClient
+from src.agent.system_prompt import SYSTEM_PROMPT
+from mcp_server.schemas.tool_definitions import MCP_TOOLS
+from mcp_server.server import mcp_server
 
 
 class AgentService:

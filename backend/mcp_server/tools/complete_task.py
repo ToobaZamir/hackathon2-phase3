@@ -1,8 +1,8 @@
 """MCP tool for completing tasks."""
 from sqlmodel import Session, select
 from typing import Dict, Any
-from backend.src.models.task import Task
-from backend.src.database.connection import engine
+from src.models.task import Task
+from src.database.connection import engine
 
 
 async def complete_task(

@@ -238,18 +238,18 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **Goal**: Provide user-friendly interface for conversational task management
 
-- [ ] T070 [P] Create chat page component in frontend-todo-app/src/app/chat/page.tsx
-- [ ] T071 [P] Create ChatInterface container component in frontend-todo-app/src/components/ChatInterface.tsx
-- [ ] T072 [P] Create MessageList display component in frontend-todo-app/src/components/MessageList.tsx
-- [ ] T073 [P] Create MessageInput text input component in frontend-todo-app/src/components/MessageInput.tsx
-- [ ] T074 [P] Create chat TypeScript types in frontend-todo-app/src/types/chat.ts
-- [ ] T075 Add sendChatMessage API function in frontend-todo-app/src/lib/api.ts
-- [ ] T076 Implement state management: messages, conversationId, loading states
-- [ ] T077 Implement JWT passing in Authorization header
-- [ ] T078 Add error handling: 401 → redirect to login, 403 → show error, 500 → retry prompt
-- [ ] T079 Implement conversation ID persistence (localStorage or session storage)
-- [ ] T080 Add loading spinner during agent processing
-- [ ] T081 Style chat UI with Tailwind CSS (message bubbles, timestamps, user/assistant differentiation)
+- [X] T070 [P] Create chat page component in frontend-todo-app/src/app/chat/page.tsx
+- [X] T071 [P] Create ChatInterface container component in frontend-todo-app/src/components/ChatInterface.tsx
+- [X] T072 [P] Create MessageList display component in frontend-todo-app/src/components/MessageList.tsx
+- [X] T073 [P] Create MessageInput text input component in frontend-todo-app/src/components/MessageInput.tsx
+- [X] T074 [P] Create chat TypeScript types in frontend-todo-app/src/types/chat.ts
+- [X] T075 Add sendChatMessage API function in frontend-todo-app/src/lib/api.ts
+- [X] T076 Implement state management: messages, conversationId, loading states
+- [X] T077 Implement JWT passing in Authorization header
+- [X] T078 Add error handling: 401 → redirect to login, 403 → show error, 500 → retry prompt
+- [X] T079 Implement conversation ID persistence (localStorage or session storage)
+- [X] T080 Add loading spinner during agent processing
+- [X] T081 Style chat UI with Tailwind CSS (message bubbles, timestamps, user/assistant differentiation)
 
 **Checkpoint**: Frontend chat UI functional - users can interact with AI agent through web interface
 
@@ -261,18 +261,18 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **Goal**: Validate all 12 MVP acceptance criteria from spec.md
 
-- [ ] T082 Test US1: "Add buy groceries" → verify task created → confirm friendly response
-- [ ] T083 Test US2: "Show my tasks" and "List pending tasks" → verify filtering works
-- [ ] T084 Test US3: "Complete task 3" and "Mark buy groceries done" → verify status updates
-- [ ] T085 Test US4: "Delete task 5" → verify confirmation → "yes" → verify deletion
-- [ ] T086 Test US5: "Update task 2 to 'Buy organic milk'" → verify title changes
-- [ ] T087 Test US6: Create tasks → stop server → restart → resume conversation → verify context maintained
-- [ ] T088 Test authentication: Invalid JWT → expect 401, wrong user_id → expect 403
-- [ ] T089 Test error handling: "Complete task 999" → friendly error, "Add" alone → clarification request
-- [ ] T090 Test ambiguous references: "Complete buy" when 2 tasks match → agent lists options
-- [ ] T091 Test empty states: "Show my tasks" with no tasks → friendly empty message
-- [ ] T092 Test conversation creation: No conversation_id → new conversation created → ID returned
-- [ ] T093 Test tool chaining: "Complete buy groceries" → list_tasks → complete_task → success
+- [X] T082 Test US1: "Add buy groceries" → verify task created → confirm friendly response
+- [X] T083 Test US2: "Show my tasks" and "List pending tasks" → verify filtering works
+- [X] T084 Test US3: "Complete task 3" and "Mark buy groceries done" → verify status updates
+- [X] T085 Test US4: "Delete task 5" → verify confirmation → "yes" → verify deletion
+- [X] T086 Test US5: "Update task 2 to 'Buy organic milk'" → verify title changes
+- [X] T087 Test US6: Create tasks → stop server → restart → resume conversation → verify context maintained
+- [X] T088 Test authentication: Invalid JWT → expect 401, wrong user_id → expect 403
+- [X] T089 Test error handling: "Complete task 999" → friendly error, "Add" alone → clarification request
+- [X] T090 Test ambiguous references: "Complete buy" when 2 tasks match → agent lists options
+- [X] T091 Test empty states: "Show my tasks" with no tasks → friendly empty message
+- [X] T092 Test conversation creation: No conversation_id → new conversation created → ID returned
+- [X] T093 Test tool chaining: "Complete buy groceries" → list_tasks → complete_task → success
 
 **Checkpoint**: All 12 MVP acceptance criteria verified manually
 

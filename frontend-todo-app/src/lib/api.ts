@@ -121,3 +121,60 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
+
+// Chat API functions
+export interface ChatRequest {
+  message: string;
+  conversation_id?: number | null;
+}
+
+export interface ChatResponse {
+  message: string;
+  conversation_id: number;
+  tool_calls?: any[] | null;
+}
+
+/**
+ * Send a chat message to the AI agent
+ * @param userId - User ID from authentication
+ * @param message - User's message
+ * @param conversationId - Optional conversation ID to resume conversation
+ * @param token - JWT token for authentication
+ */
+export async function sendChatMessage(
+  userId: number,
+  message: string,
+  conversationId: number | null,
+  token: string
+): Promise<ChatResponse> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001'}/api/${userId}/chat`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        message,
+        conversation_id: conversationId,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Authentication required. Please log in.');
+    }
+    if (response.status === 403) {
+      throw new Error('Access denied. You can only access your own conversations.');
+    }
+    if (response.status === 404) {
+      throw new Error('Conversation not found.');
+    }
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Failed to send message');
+  }
+
+  return await response.json();
+}

@@ -284,17 +284,17 @@ description: "Dependency-ordered task list for AI Todo Chatbot implementation"
 
 **Goal**: Enable judges to understand architecture, setup, and evaluate process transparency
 
-- [ ] T094 [P] Update README.md with Phase 3 architecture overview, Cohere setup, chat endpoint docs
-- [ ] T095 [P] Update backend/.env.example with all required environment variables and descriptions
-- [ ] T096 [P] Update backend/requirements.txt with cohere, openai, mcp packages
-- [ ] T097 [P] Update frontend-todo-app/package.json with react-markdown, date-fns if used
-- [ ] T098 Create ADR for OpenAI → Cohere migration decision in history/adr/
-- [ ] T099 Add demo scenario instructions to README (5 judge demo scenarios from spec.md)
-- [ ] T100 Add architecture diagram (Mermaid) to README or docs/
-- [ ] T101 Verify all PHRs created for spec, plan, tasks phases
-- [ ] T102 Add COHERE_API_KEY setup instructions to README
-- [ ] T103 Add quickstart section: Clone → Install → Configure → Run → Test
-- [ ] T104 Final verification: Run through all 5 demo scenarios for hackathon judges
+- [X] T094 [P] Update README.md with Phase 3 architecture overview, Cohere setup, chat endpoint docs
+- [X] T095 [P] Update backend/.env.example with all required environment variables and descriptions
+- [X] T096 [P] Update backend/requirements.txt with cohere, openai, mcp packages
+- [X] T097 [P] Update frontend-todo-app/package.json with react-markdown, date-fns if used
+- [X] T098 Create ADR for OpenAI → Cohere migration decision in history/adr/
+- [X] T099 Add demo scenario instructions to README (5 judge demo scenarios from spec.md)
+- [X] T100 Add architecture diagram (Mermaid) to README or docs/
+- [X] T101 Verify all PHRs created for spec, plan, tasks phases
+- [X] T102 Add COHERE_API_KEY setup instructions to README
+- [X] T103 Add quickstart section: Clone → Install → Configure → Run → Test
+- [X] T104 Final verification: Run through all 5 demo scenarios for hackathon judges
 
 **Checkpoint**: ✅ Documentation complete - project ready for hackathon submission and judging
 

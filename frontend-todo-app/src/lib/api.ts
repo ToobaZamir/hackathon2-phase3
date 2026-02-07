@@ -148,7 +148,7 @@ export async function sendChatMessage(
   token: string
 ): Promise<ChatResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001'}/api/${userId}/chat`,
     {
       method: 'POST',
       headers: {
@@ -158,7 +158,6 @@ export async function sendChatMessage(
       body: JSON.stringify({
         message,
         conversation_id: conversationId,
-        user_id: userId, // 👈 yahan bhejo
       }),
     }
   );
@@ -170,4 +169,5 @@ export async function sendChatMessage(
 
   return await response.json();
 }
+
 

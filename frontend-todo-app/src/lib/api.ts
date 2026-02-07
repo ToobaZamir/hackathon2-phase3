@@ -147,20 +147,21 @@ export async function sendChatMessage(
   conversationId: number | null,
   token: string
 ): Promise<ChatResponse> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001'}/api/${userId}/chat`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        message,
-        conversation_id: conversationId,
-      }),
-    }
-  );
+ // api.ts
+const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001'}/api/chat`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      message,
+      conversation_id: conversationId,
+    }),
+  }
+);
 
   if (!response.ok) {
     if (response.status === 401) {

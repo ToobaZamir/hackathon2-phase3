@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 import logging
 
+
 from src.api.v1 import tasks, auth, chat
 from src.core.config import settings
 from src.database.connection import engine
@@ -42,14 +43,9 @@ app = FastAPI(
 
 # ---------------- MIDDLEWARE ----------------
 # CORS configuration to allow frontend access
-app.add_middleware(
+app.add_middleware (
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],

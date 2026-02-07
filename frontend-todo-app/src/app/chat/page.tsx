@@ -52,6 +52,19 @@ export default function ChatPage() {
             Manage your tasks with natural language. Try: "Add buy groceries" or "Show my tasks"
           </p>
         </div>
+
+        {/* Debug Panel */}
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded text-sm">
+          <strong>Debug Info:</strong>
+          <div className="mt-2 font-mono text-xs">
+            <div>Token: {typeof window !== 'undefined' && localStorage.getItem('todo_app_auth_token') ? '✅ Present' : '❌ Missing'}</div>
+            <div>User: {typeof window !== 'undefined' && localStorage.getItem('currentUser') ? '✅ Present' : '❌ Missing'}</div>
+            {typeof window !== 'undefined' && localStorage.getItem('currentUser') && (
+              <div>User ID: {JSON.parse(localStorage.getItem('currentUser')!).id}</div>
+            )}
+          </div>
+        </div>
+
         <ChatInterface />
       </div>
     </div>

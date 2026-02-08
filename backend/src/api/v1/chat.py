@@ -75,7 +75,7 @@ async def chat(
     # 4. Save user message to DB
     user_message = conversation_service.add_message(
         conversation_id=conversation.id,
-        role="user",
+        sender="user",
         content=request.message
     )
 
@@ -99,9 +99,8 @@ async def chat(
     # 6. Save agent response to DB
     assistant_message = conversation_service.add_message(
         conversation_id=conversation.id,
-        role="assistant",
+        sender="ai",
         content=agent_response_text,
-        tool_calls=tool_calls_log
     )
 
     # 7. Return response

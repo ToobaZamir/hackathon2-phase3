@@ -4,7 +4,7 @@ from typing import List, Dict, Optional
 from datetime import datetime
 
 from src.models.conversation import Conversation, ConversationCreate
-from src.models.message import Message, MessageCreate, MessageRole
+from src.models.message import Message, MessageCreate, SenderEnum
 
 
 class ConversationService:
@@ -72,14 +72,14 @@ class ConversationService:
         statement = (
             select(Message)
             .where(Message.conversation_id == conversation_id)
-            .order_by(Message.timestamp.asc())
+            .order_by(Message.created_at.asc())
             .limit(limit)
         )
         messages = self.session.exec(statement).all()
 
         return [
             {
-                "role": message.role,
+                "role": message.sender,
                 "content": message.content
             }
             for message in messages
@@ -88,27 +88,24 @@ class ConversationService:
     def add_message(
         self,
         conversation_id: int,
-        role: str,
+        sender: str,
         content: str,
-        tool_calls: Optional[Dict] = None
     ) -> Message:
         """
         Add a new message to a conversation.
 
         Args:
             conversation_id: ID of the parent conversation
-            role: Message role (user/assistant/system/tool)
+            sender: Who sent the message ("user" or "ai")
             content: Message content
-            tool_calls: Optional tool calls metadata
 
         Returns:
             Created message object
         """
         message = Message(
             conversation_id=conversation_id,
-            role=role,
+            sender=sender,
             content=content,
-            tool_calls=tool_calls
         )
         self.session.add(message)
 

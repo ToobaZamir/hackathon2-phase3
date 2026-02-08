@@ -77,9 +77,13 @@ class ConversationService:
         )
         messages = self.session.exec(statement).all()
 
+        # Map DB sender values to API role values
+        # DB stores "ai", but Cohere/OpenAI API expects "assistant"
+        sender_to_role = {"ai": "assistant", "user": "user"}
+
         return [
             {
-                "role": message.sender,
+                "role": sender_to_role.get(message.sender, message.sender),
                 "content": message.content
             }
             for message in messages

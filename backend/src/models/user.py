@@ -1,48 +1,36 @@
-from sqlmodel import SQLModel, Field, Column
+from typing import List, Optional
+from sqlmodel import SQLModel, Field, Relationship, Column
 from datetime import datetime
-from typing import Optional
 from sqlalchemy import DateTime, func
 from src.core.security import verify_password as verify_password_func, get_password_hash
-import os
-
+from .conversation import Conversation
 
 class UserBase(SQLModel):
-    """Base model for User containing common fields"""
     username: str = Field(unique=True, min_length=3, max_length=50)
     email: str = Field(unique=True, min_length=5, max_length=100)
     first_name: Optional[str] = Field(default=None, max_length=50)
     last_name: Optional[str] = Field(default=None, max_length=50)
 
-
 class User(UserBase, table=True):
-    """User model for database table"""
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
     is_active: bool = Field(default=True)
-    created_at: datetime = Field(sa_column=Column(
-        DateTime(timezone=True),
-        default=func.now(),
-        nullable=False
-    ))
-    updated_at: datetime = Field(sa_column=Column(
-        DateTime(timezone=True),
-        default=func.now(),
-        onupdate=func.now(),
-        nullable=False
-    ))
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=func.now(), nullable=False))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), default=func.now(), onupdate=func.now(), nullable=False))
+
+    # Correct placement of relationship
+    conversations: List["Conversation"] = Relationship(back_populates="user")
 
     def verify_password(self, plain_password: str) -> bool:
-        """Verify a password against the hashed password"""
         return verify_password_func(plain_password, self.hashed_password)
 
-
 class UserCreate(UserBase):
-    """Schema for creating a new user"""
     password: str = Field(min_length=6, max_length=128)
-
     def hash_password(self) -> str:
-        """Hash the password before storing"""
         return get_password_hash(self.password)
+
+# Rest of your schemas (UserRegisterRequest, UserLoginRequest, UserPublic, UserUpdate, Token, TokenData)
+
 
 
 class UserRegisterRequest(UserCreate):

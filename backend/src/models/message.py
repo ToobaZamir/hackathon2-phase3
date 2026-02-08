@@ -1,6 +1,4 @@
 """Message model for storing chat messages."""
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Optional
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship

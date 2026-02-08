@@ -1,6 +1,4 @@
 """Conversation model for storing chat sessions."""
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, List, Optional
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime

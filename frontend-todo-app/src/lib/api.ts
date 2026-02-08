@@ -5,7 +5,7 @@ class ApiClient {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001';
+    this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
   }
 
   // Generic request method with JWT token handling
@@ -148,7 +148,7 @@ export async function sendChatMessage(
   token: string
 ): Promise<ChatResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8001'}/api/${userId}/chat`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'}/api/${userId}/chat`,
     {
       method: 'POST',
       headers: {

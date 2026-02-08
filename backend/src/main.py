@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 import logging
 
 
-from src.api.v1 import tasks, auth, chat
+from src.api.v1 import tasks, auth, chat, messages
 from src.core.config import settings
 from src.database.connection import engine
 from src.core.error_handlers import (
@@ -73,6 +73,7 @@ app.add_exception_handler(500, general_exception_handler)
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(tasks.router, prefix="/api/todos", tags=["tasks"])
 app.include_router(chat.router, prefix="/api", tags=["chat"])  # Phase 3: Conversational interface
+app.include_router(messages.router, prefix="/api", tags=["messages"])
 
 # ---------------- ROOT ----------------
 @app.get("/")

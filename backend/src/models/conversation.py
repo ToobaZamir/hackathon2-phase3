@@ -1,9 +1,14 @@
 """Conversation model for storing chat sessions."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List, Optional
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
-from typing import Optional, List
 from sqlalchemy import Column, DateTime, func
-from .user import User
+
+if TYPE_CHECKING:
+    from .user import User
+    from .message import Message
 
 
 class Conversation(SQLModel, table=True):
@@ -22,15 +27,13 @@ class Conversation(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False),
         description="Last activity timestamp"
     )
-    # Relationships
-    user: Optional[User] = Relationship(back_populates="conversations")
-    messages: List["Message"] = Relationship(
-       back_populates="conversation",
-       sa_relationship_kwargs={"cascade": "all, delete-orphan"}
-)
 
     # Relationships
-   # messages: List["Message"] = Relationship(back_populates="conversation", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
+    user: Optional["User"] = Relationship(back_populates="conversations")
+    messages: List["Message"] = Relationship(
+        back_populates="conversation",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
 
 
 class ConversationCreate(SQLModel):
@@ -44,7 +47,7 @@ class ConversationPublic(SQLModel):
     user_id: int
     created_at: datetime
     updated_at: datetime
-    message_count: int = 0  # Computed field
+    message_count: int = 0
 
     class Config:
         from_attributes = True
